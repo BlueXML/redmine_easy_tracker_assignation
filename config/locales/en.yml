@@ -1,0 +1,6 @@
+# English strings go here for Rails i18n
+en:
+  permission_assign_trackers: Auto-assign tracker to member
+  enumeration_project_roles: Project Roles
+  label_roles: Project Roles
+  label_auto_assign: Auto-assign tracker to

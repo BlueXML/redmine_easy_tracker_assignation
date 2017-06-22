@@ -1,0 +1,73 @@
+<!--#Copyright (C) 2017  Alexandre BOUDINE
+#
+#This program is free software: you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation, either version 3 of the License, or
+#(at your option) any later version.
+#
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License
+#along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
+
+<% if @project.new_record? || @project.module_enabled?('issue_tracking') %>
+	<% unless @trackers.empty? %>
+
+		<% @members = Member.all.where("user_id IN (SELECT id FROM users WHERE type = 'User')").to_a
+			if @members != nil then
+				@members = @members.select{|m| (m[:project_id] == @project[:id].to_i)}			
+			end
+			if @members != nil then
+				@members = @members.map{|m| [(User.find(m[:user_id]).firstname + " " + User.find(m[:user_id]).lastname), m[:user_id]]}
+				@members.unshift(['',-1]) #add an empty slot
+			end
+		%>
+
+		<% @assigns = TrackerMemberAssociation.all
+		if @assigns != nil then
+			@assigns = @assigns.select{|a| (a[:project_id] == @project[:id].to_i)}
+		end %>
+
+		<hr>
+		<legend style="padding-left: 20px; font-weight: bold; display: inline-block;"><%= l(:label_auto_assign) %> : </legend>
+		<table style="display: inline-flex;">
+			<% @trackers.each do |tracker| %>
+				<tr>
+				<td><%= tracker %> : </td><td><%= select_tag(:member_select, options_for_select(@members), {:onChange => "javascript: assign(this);", :class => "member_select_"+tracker.id.to_s}) %></td></tr>
+				<% if @assigns != nil %>
+					<% @user = @assigns.select{|r| (r[:tracker_id] == tracker.id.to_i)} %>
+					<% if @user.size != 0 %>
+						<% @user = @user.first %>
+						<script type="text/javascript">
+							$('.member_select_<%= tracker.id.to_s %> option[value=<%= @user[:user_id] %>]').attr('selected','selected');
+						</script>
+					<% end %>
+				<% end %>
+			<% end %>
+		</table>
+	<% end %>
+<% end %>
+
+<script type="text/javascript">
+	function assign(item){
+		var user = item.options[item.selectedIndex].value;
+		if(user != null){
+			var tracker_id = ((item.className).substring((item.className).indexOf("member_select_")+14)).split(" ")[0];
+			$.ajax({
+					url: "/info/create",
+					type: "POST",
+					data: {
+						tracker_id: tracker_id,
+						project_id: "<%= @project[:id] %>",
+						user_id: user
+					},
+					success: function(html){
+						location.reload();
+					}
+				});
+		}
+	}
+</script>

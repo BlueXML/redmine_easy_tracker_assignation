@@ -1,0 +1,37 @@
+<!--#Copyright (C) 2017  Alexandre BOUDINE
+#
+#This program is free software: you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation, either version 3 of the License, or
+#(at your option) any later version.
+#
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License
+#along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
+
+<script type="text/javascript">
+	<% if @issue.id == nil %>
+		<% if @project == nil %>
+			<% @pro = @issue[:project_id] %>
+		<% else %>
+			<% @pro = @project[:id] %>
+		<% end %>
+		<% if @pro != nil %>
+			<% @auto_assigns = TrackerMemberAssociation.all
+				if @auto_assigns != nil then
+					@auto_assigns = @auto_assigns.select{|a| (a[:project_id] == @pro.to_i)}
+				end
+				if @auto_assigns != nil then 
+					@assign = @auto_assigns.select{|a| (a[:tracker_id] == @issue[:tracker_id].to_i)}
+					@assign = @assign.first
+				end %>
+			<% if @assign != nil %>
+				$('#issue_assigned_to_id option[value=<%= @assign[:user_id].to_i %>]').attr('selected','selected');
+			<% end %>
+		<% end %>
+	<% end %>
+</script>
