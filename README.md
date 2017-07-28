@@ -24,8 +24,8 @@ To associate member and tracker
 
 ## Installation :
 
-	$cd /path/to/redmine/directory
-	$git clone https://github.com/...
+	$cd /path/to/redmine/directory/plugins
+	$git clone https://github.com/BlueXML/redmine_easy_tracker_assignation.git
 	$bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
 ## Compatibility :
