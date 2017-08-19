@@ -1,0 +1,6 @@
+# Simplified Chinese strings go here for Rails i18n
+zh:
+  permission_assign_trackers: 指定跟踪类型自动指派
+  enumeration_project_roles: 项目角色
+  label_roles: 项目角色
+  label_auto_assign: 指定跟踪类型自动指派给
