@@ -21,8 +21,11 @@
 				@members = @members.select{|m| (m[:project_id] == @project[:id].to_i)}			
 			end
 			if @members != nil then
-				@members = @members.map{|m| [(User.find(m[:user_id]).firstname + " " + User.find(m[:user_id]).lastname), m[:user_id]]}
-				@members.unshift(['',-1]) #add an empty slot
+				@members = @members.map do |m|
+					@users = User.find(m[:user_id])
+					[(@users.lastname + " " + @users.firstname), m[:user_id]]
+				end
+				@members.unshift(['',-1]).sort! #add an empty slot
 			end
 		%>
 
