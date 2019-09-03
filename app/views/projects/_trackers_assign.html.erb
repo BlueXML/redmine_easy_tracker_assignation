@@ -19,7 +19,7 @@
 		<%  @members = @project.principals.map { |m| [(m.lastname + " " + m.firstname), m.id] }
 			@members.unshift(['',-1]).sort! #add an empty slot
 		%>
-		
+
 		<% @assigns = TrackerMemberAssociation.all
 		if @assigns != nil then
 			@assigns = @assigns.select{|a| (a[:project_id] == @project[:id].to_i)}
@@ -51,7 +51,7 @@
 		if(user != null){
 			var tracker_id = ((item.className).substring((item.className).indexOf("member_select_")+14)).split(" ")[0];
 			$.ajax({
-					url: "/info/create",
+					url: "<%= url_for(info_create_path) %>",
 					type: "POST",
 					data: {
 						tracker_id: tracker_id,
