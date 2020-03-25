@@ -14,24 +14,32 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
 
 <script type="text/javascript">
-	<% if @issue.id == nil %>
-		<% if @project == nil %>
-			<% @pro = @issue[:project_id] %>
-		<% else %>
-			<% @pro = @project[:id] %>
-		<% end %>
-		<% if @pro != nil %>
-			<% @auto_assigns = TrackerMemberAssociation.all
-				if @auto_assigns != nil then
-					@auto_assigns = @auto_assigns.select{|a| (a[:project_id] == @pro.to_i)}
-				end
-				if @auto_assigns != nil then 
-					@assign = @auto_assigns.select{|a| (a[:tracker_id] == @issue[:tracker_id].to_i)}
-					@assign = @assign.first
-				end %>
-			<% if @assign != nil %>
-				$('#issue_assigned_to_id option[value=<%= @assign[:user_id].to_i %>]').attr('selected','selected');
-			<% end %>
-		<% end %>
-	<% end %>
+    $(document).ready(function() {
+        var all_assotiations = []
+        <% for i in TrackerMemberAssociation.all %>
+            dict_assotiation = {
+                user_id: <%= i.user_id %>,
+                project_id: <%= i.project_id %>,
+                tracker_id: <%= i.tracker_id %>
+            }
+            all_assotiations.push(dict_assotiation)
+        <% end %>
+        <% if @issue %>
+            if ($('#issue-form.new_issue').length) {
+                now_project = <%= @project[:id] %>;
+                function alert_test() {
+                    tracker = document.getElementById('issue_tracker_id').value;
+                    user = all_assotiations.find(item => item.project_id == now_project && item.tracker_id == tracker);
+                        if (user) {
+                            document.getElementById('issue_assigned_to_id').value = user.user_id;
+                        }
+                        else {
+                            document.getElementById('issue_assigned_to_id').value = null;
+                        }
+                };
+                alert_test();
+                $(document).on("change", '#issue_tracker_id', alert_test);
+            };
+        <% end %>
+    });
 </script>

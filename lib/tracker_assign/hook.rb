@@ -17,6 +17,6 @@ module TrackerAssignHook
 	class Hook < Redmine::Hook::ViewListener
 		#Add select list in project settings and set auto-assign in issue form
 		render_on :view_projects_form, :partial => 'projects/trackers_assign'
-		render_on :view_issues_form_details_bottom, :partial => 'issues/tracker_auto_assign'
+		render_on :view_layouts_base_html_head, :partial => 'issues/tracker_auto_assign'
 	end
 end
