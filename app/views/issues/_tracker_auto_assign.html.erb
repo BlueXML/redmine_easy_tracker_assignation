@@ -25,21 +25,22 @@
             all_assotiations.push(dict_assotiation)
         <% end %>
         <% if @issue %>
-            if ($('#issue-form.new_issue').length) {
-                now_project = <%= @project[:id] %>;
-                function alert_test() {
-                    tracker = document.getElementById('issue_tracker_id').value;
-                    user = all_assotiations.find(item => item.project_id == now_project && item.tracker_id == tracker);
+            <% if @project %>
+                if ($('#issue-form.new_issue').length) {
+                    now_project = <%= @project[:id] %>;
+                    function change_assigned() {
+                        tracker = document.getElementById('issue_tracker_id').value;
+                        user = all_assotiations.find(item => item.project_id == now_project && item.tracker_id == tracker);
                         if (user) {
                             document.getElementById('issue_assigned_to_id').value = user.user_id;
-                        }
-                        else {
+                        } else {
                             document.getElementById('issue_assigned_to_id').value = null;
-                        }
+                        };
+                    };
+                    change_assigned();
+                    $(document).on("change", '#issue_tracker_id', change_assigned);
                 };
-                alert_test();
-                $(document).on("change", '#issue_tracker_id', alert_test);
-            };
+            <% end %>
         <% end %>
     });
 </script>
